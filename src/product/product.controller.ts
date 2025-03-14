@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { GetMongoIdDto } from 'src/user/dto/create-user.dto';
-import mongoose from 'mongoose';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { ProductSchema } from './schema/product.schema';
 
 @ApiTags("Product")
 @Controller('product')

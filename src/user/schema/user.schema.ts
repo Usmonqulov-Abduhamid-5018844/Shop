@@ -38,9 +38,6 @@ export class User extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Region', required: false })
   @Type(() => Region)
   regionId?: Types.ObjectId;
-
-  @Prop({ type: [String], default: [] })
-  orders?: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

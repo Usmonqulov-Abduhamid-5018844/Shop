@@ -4,19 +4,21 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './schema/product.schema';
 import mongoose, { Model } from 'mongoose';
-import { GetMongoIdDto } from 'src/user/dto/create-user.dto';
+import { User } from 'src/user/schema/user.schema';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(Product.name) private ProductSchema: Model<Product>,
+    @InjectModel(User.name) private UserSchema: Model<User>,
   ) {}
 
   async create(data: CreateProductDto) {
     return await this.ProductSchema.create(data);
   }
 
-  async findAll() {
+  async findAll( ) {
     let product = await this.ProductSchema.find();
     if (!product.length) {
       return { Message: 'Not Fount Product' };
@@ -50,4 +52,4 @@ export class ProductService {
     }
     return await this.ProductSchema.findByIdAndDelete(id);
   }
-}
+ }
