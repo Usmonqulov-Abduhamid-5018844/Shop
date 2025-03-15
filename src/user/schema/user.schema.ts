@@ -29,8 +29,6 @@ export class User extends Document {
   @Prop()
   location?: string;
 
-  @Prop()
-  shopname?: string;
 
   @Prop({ enum: Role, default: Role.USER })
   role: Role;

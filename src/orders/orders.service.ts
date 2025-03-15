@@ -3,10 +3,13 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Order } from './schema/order.schema';
 import { Model } from 'mongoose';
+import { User, UserSchema } from 'src/user/schema/user.schema';
 
 @Injectable()
 export class OrdersService {
-  constructor(@InjectModel(Order.name) private OrderSchema: Model<Order>){}
+  constructor(@InjectModel(Order.name) private OrderSchema: Model<Order>,
+               @InjectModel(User.name) private UserSchema: Model<User>
+){}
 
   async create(Orders: CreateOrderDto, req: any) {
    let DATE = new Date()
@@ -27,12 +30,11 @@ export class OrdersService {
     return data
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} order`;
-  }
-
-  update(id: string, data: {status: string} ) {
-    return `This action updates a #${id} order`;
+  async update(id: string, req:any) {
+    let userId = req.user.Id;
+    let USER = this.UserSchema.findById(id)
+    console.log(USER);
+    
   }
 
 }

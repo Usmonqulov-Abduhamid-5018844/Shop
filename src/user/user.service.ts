@@ -16,7 +16,7 @@ export class UserService {
 
   async register(data: CreateUserDto) {
     try {
-      let { email, password, role, shopname } = data;
+      let { email, password} = data;
       let user = await this.UserSchema.findOne({ email });
       if (user) {
         return { Message: "Ro'yhaddan o'tgansiz" };

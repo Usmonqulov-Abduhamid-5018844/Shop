@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsMongoId, IsNotEmpty, IsObject, IsOptional, IsString, Length, Matches } from "class-validator";
+import { IsEnum, IsMongoId, IsNotEmpty, IsObject, IsOptional, IsString, Length, Matches } from "class-validator";
 
 export enum Role  {
     USER = "USER",
@@ -38,15 +38,9 @@ export class CreateUserDto {
       @IsString()
       location: string;
 
-
-      @ApiProperty({example: "name"})
-      @IsOptional()
-      @IsString()
-      shopname: string;
-
       @ApiProperty({example: "USER  |  SELLER"})
       @IsOptional() 
-      @IsString()
+      @IsEnum(Role)
       role: Role;
 
       @ApiProperty({example: "67d3a639b0f028e6e82222b8"})
