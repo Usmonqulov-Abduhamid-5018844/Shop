@@ -6,7 +6,7 @@ export class UpdateUserDto {
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty({example: "Srting_0451852"})
+  @ApiProperty({example: "50803006730015"})
   @IsNotEmpty()
   password: string;
 }

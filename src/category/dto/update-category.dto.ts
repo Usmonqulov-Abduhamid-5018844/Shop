@@ -5,10 +5,10 @@ export class UpdateCategoryDto {
         @ApiProperty({example: "Elektronic"})
         @IsNotEmpty()
         @IsString()
-        name: string;
+        name?: string;
     
         @ApiProperty({example: "link"})
         @IsNotEmpty()
         @IsString()
-        image: string;
+        image?: string;
 }

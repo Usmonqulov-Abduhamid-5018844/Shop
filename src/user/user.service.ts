@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto, GetMongoIdDto } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schema/user.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
@@ -16,72 +16,85 @@ export class UserService {
 
   async register(data: CreateUserDto) {
     try {
-      let { email, password} = data;
+      let { email, password, phone } = data;
       let user = await this.UserSchema.findOne({ email });
       if (user) {
         return { Message: "Ro'yhaddan o'tgansiz" };
+      }
+      let UserPhonr = await this.UserSchema.findOne({phone});
+      if(UserPhonr){
+        return {Message: "Bunday telefon raqam Bazada mavjud."}
       }
 
       let hash = bcrypt.hashSync(password, 10);
       data.password = hash;
       return this.UserSchema.create(data);
-    } catch (e) {
-      return { Message: e.Message };
+    } catch (error) {
+      return { Message: error };
     }
   }
   async login(data: UpdateUserDto) {
-   try{
-    let { email, password } = data;
-    let user = await this.UserSchema.findOne({ email });
-    if (!user) {
-      return { Message: "Ro'yhaddan o'tmagansiz" };
+    try {
+      let { email, password } = data;
+      let user = await this.UserSchema.findOne({ email });
+      if (!user) {
+        return { Message: "Ro'yhaddan o'tmagansiz" };
+      }
+      if (!bcrypt.compareSync(password, user.password)) {
+        return { Message: 'Password Xato kritildi' };
+      }
+      return { Token: this.Jwt.sign({ Id: user._id }) };
+    } catch (error) {
+      return { Message: error };
     }
-    if (!bcrypt.compareSync(password, user.password)) {
-      return { Message: 'Password Xato kritildi' };
-    }
-    return { Token: this.Jwt.sign({ Id: user._id }) };
   }
-  catch(e){
-    return {Message: e.Message};
-  }
-
-   }
   async findAll() {
-    try{
-      let data = await this.UserSchema.find();
-    if (!data.length) {
-      return { Message: 'Not Fount User' };
-    }
-    return data;
-    }
-    catch(e){
-      return {Message: e.Message};
+    try {
+      let data = await this.UserSchema.find().populate('regionId');
+      if (!data.length) {
+        return { Message: 'Not Fount User' };
+      }
+      return data;
+    } catch (error) {
+      return { Message: error };
     }
   }
 
-  async findOne(id: GetMongoIdDto) {
-    try{
-      let user = await this.UserSchema.findById(id);
-    if (!user) {
-      return { Message: 'Not Found user' };
-    }
-    return user;
-    }
-    catch(e){
-      return {Message: e.Message};
+  async findOne(id: string) {
+    try {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return { Message: "User id Noto'g'ri" };
+      }
+      try {
+        let user = await this.UserSchema.findById(id).populate('regionId');
+        if (!user) {
+          return { Message: 'Not Found user' };
+        }
+        return user;
+      } catch (e) {
+        return { Message: e.Message };
+      }
+    } catch (error) {
+      return { Message: error };
     }
   }
 
   async remove(id: string) {
-    try{
-      let user = await this.UserSchema.findById(id);
-    if (!user) {
-      return { Message: 'Not Found user' };
-    }
-    return this.UserSchema.findByIdAndDelete(id);
-    }
-    catch(e){
-      return {Message: e.Message};
+    try {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return { Message: "User id Noto'g'ri" };
+      }
+      try {
+        let user = await this.UserSchema.findById(id);
+        if (!user) {
+          return { Message: 'Not Found user' };
+        }
+        return this.UserSchema.findByIdAndDelete(id);
+      } catch (e) {
+        return { Message: e.Message };
+      }
+    } catch (error) {
+      return { Message: error };
     }
   }
 }

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Type } from 'class-transformer';
-import { Document, Types } from 'mongoose';
+import mongoose, { Document, Types } from 'mongoose';
 import { Region } from 'src/region/schema/region.schema';
 
 export enum Role {
@@ -11,16 +11,16 @@ export enum Role {
 
 @Schema()
 export class User extends Document {
-  @Prop({ required: true })
+  @Prop()
   name: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop()
   phone: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop()
   email: string;
 
-  @Prop({ required: true })
+  @Prop()
   password: string;
 
   @Prop()
@@ -29,13 +29,11 @@ export class User extends Document {
   @Prop()
   location?: string;
 
-
   @Prop({ enum: Role, default: Role.USER })
   role: Role;
 
-  @Prop({ type: Types.ObjectId, ref: 'Region', required: false })
-  @Type(() => Region)
-  regionId?: Types.ObjectId;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Region' })
+  regionId: Region;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

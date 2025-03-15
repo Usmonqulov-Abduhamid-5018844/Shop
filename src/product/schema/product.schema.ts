@@ -10,7 +10,6 @@ export enum ProductType {
 
 @Schema({ timestamps: true })
 export class Product extends Document {
-
   @Prop({ required: true })
   name: string;
 
@@ -23,22 +22,16 @@ export class Product extends Document {
   @Prop()
   description: string;
 
-  @Prop({ type: [String]}) 
-  star: string[];
-
-  @Prop({type: [String]})
-  commit?: string[]
-
   @Prop({ required: true, enum: ProductType })
   type: ProductType;
 
   @Prop({ required: true })
   color: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User',}) 
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   userId: User;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category',})
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' })
   categoryId: Category;
 }
 

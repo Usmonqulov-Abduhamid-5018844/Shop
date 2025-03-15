@@ -10,6 +10,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UploadModule } from './upload/upload.module';
 import { OrdersModule } from './orders/orders.module';
+import { CommentsModule } from './comments/comments.module';
+import { InfoModule } from './info/info.module';
 
 @Module({
   imports: [MongooseModule.forRoot('mongodb+srv://usmonqulovabduhamid_2000:50803006730015@abduhamid.2nenh.mongodb.net/Shop?retryWrites=true&w=majority&appName=Abduhamid'), UserModule, RegionModule, CategoryModule, ProductModule,
@@ -19,6 +21,8 @@ import { OrdersModule } from './orders/orders.module';
       serveRoot: '/file',
     }),
     OrdersModule,
+    CommentsModule,
+    InfoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

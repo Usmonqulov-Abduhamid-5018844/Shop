@@ -16,7 +16,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Shop Uzum')
     .setDescription('The Shop API description')
-    .setVersion('1.0')
+    .setVersion('5.5')
     .addSecurityRequirements("bearer", ["bearer"]).addBearerAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);

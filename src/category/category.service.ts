@@ -3,7 +3,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Category } from './schema/category.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
 @Injectable()
 export class CategoryService {
@@ -17,32 +17,41 @@ export class CategoryService {
 
   async findAll() {
     let data = await this.CategorySchema.find();
-    if(!data.length){
-      return {Message: "Not Found Category"}
+    if (!data.length) {
+      return { Message: 'Not Found Category' };
     }
-    return data
+    return data;
   }
 
   async findOne(id: string) {
-    let data = await this.CategorySchema.findById(id)
-    if(!data){
-      return {Message: "Not Fount Category"}
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return { Message: "Category id Noto'g'ri" };
     }
-    return data
+    let data = await this.CategorySchema.findById(id);
+    if (!data) {
+      return { Message: 'Not Fount Category' };
+    }
+    return data;
   }
 
   async update(id: string, data: UpdateCategoryDto) {
-    let category = await this.CategorySchema.findById(id)
-    if(!category){
-      return {Message: "Not Fount Category"}
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return { Message: "Category id Noto'g'ri" };
+    }
+    let category = await this.CategorySchema.findById(id);
+    if (!category) {
+      return { Message: 'Not Fount Category' };
     }
     return await this.CategorySchema.findByIdAndUpdate(id, data);
   }
 
   async remove(id: string) {
-    let category = await this.CategorySchema.findById(id)
-    if(!category){
-      return {Message: "Not Fount Category"}
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return { Message: "Category id Noto'g'ri" };
+    }
+    let category = await this.CategorySchema.findById(id);
+    if (!category) {
+      return { Message: 'Not Fount Category' };
     }
     return await this.CategorySchema.findByIdAndDelete(id);
   }

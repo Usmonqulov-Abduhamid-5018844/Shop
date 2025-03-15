@@ -46,13 +46,7 @@ export class CreateProductDto {
   @IsString()
   color: string;
 
-  @ApiProperty({example: "67d3a639b0f028e6e82222b8"})
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  userId: string;
-
-  @ApiProperty({example: "67d3a639b0f028e6e82222b8"})
+  @ApiProperty({example: "CategoryId"})
   @IsNotEmpty()
   @IsString()
   @IsMongoId()

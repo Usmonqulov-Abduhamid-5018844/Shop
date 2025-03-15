@@ -22,18 +22,11 @@ export class OrdersService {
   }
 
   async findAll() {
-    let data = await this.OrderSchema.find()
+    let data = await this.OrderSchema.find().populate("productId").populate("userId")
     if(!data.length){
       return {Message: "Not Found Order"}
     }
     return data
   }
-
-  // async update(id: string, req:any) {
-  //   let userId = req.user.Id;
-
-  //   console.log(USER);
-    
-
 
 }

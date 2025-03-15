@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './schema/product.schema';
 import mongoose, { Model } from 'mongoose';
 import { User } from 'src/user/schema/user.schema';
-import { ApiProperty } from '@nestjs/swagger';
+import { Comment } from 'src/comments/schema/comment.schema';
 
 @Injectable()
 export class ProductService {
@@ -14,30 +14,72 @@ export class ProductService {
     @InjectModel(User.name) private UserSchema: Model<User>,
   ) {}
 
-  async create(data: CreateProductDto) {
-    return await this.ProductSchema.create(data);
-  }
-
-  async findAll( ) {
-    let product = await this.ProductSchema.find();
-    if (!product.length) {
-      return { Message: 'Not Fount Product' };
+  async create(data: CreateProductDto, req: any) {
+    let userId = req.user.Id;
+    let user = await this.UserSchema.findById(userId);
+    if (!user) {
+      return { Message: 'Malumotlaringiz topilmadi' };
     }
-    return product;
+    if (user.role != 'SELLER') {
+      return { Message: "Product yaratish uchun SELLER bo'lishingiz kerak" };
+    }
+    let newProduct = {
+      ...data,
+      userId,
+    };
+    return await this.ProductSchema.create(newProduct);
+  }
+  async findAll(query: Record<string, any>) {
+    try {
+      let sort: any = {};
+      let page = parseInt(query.page) || 1;
+      let limit = parseInt(query.limit) || 10;
+      let skip = (page - 1) * limit;
+
+      if (query.sortBy) {
+        sort[query.sortBy] = query.order === 'desc' ? -1 : 1;
+      } else {
+        sort.name = -1;
+      }
+      let products = await this.ProductSchema.find()
+        .populate('userId')
+        .populate('categoryId')
+        .sort(sort)
+        .skip(skip)
+        .limit(limit);
+
+      return {
+        total: products.length,
+        page,
+        limit,
+        data: products,
+      };
+    } catch (error) {
+      return { Message: error.message || 'Xatolik yuz berdi' };
+    }
   }
 
   async findOne(id: string) {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new Error("Id Noto'g'ri kritildi");
+    try {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return { Message: "Product id Noto'g'ri" };
+      }
+      let product = await this.ProductSchema.findById(id)
+        .populate('userId')
+        .populate('categoryId');
+      if (!product) {
+        return { Message: 'Not Fount Product id' };
+      }
+      return product;
+    } catch (error) {
+      return { Message: error.Message };
     }
-    let product = await this.ProductSchema.findById(id);
-    if (!product) {
-      return { Message: 'Not Fount Product id' };
-    }
-    return product;
   }
 
   async update(id: string, data: UpdateProductDto) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return { Message: "Product id Noto'g'ri" };
+    }
     let product = await this.ProductSchema.findById(id);
     if (!product) {
       return { Message: 'Not Fount Product id' };
@@ -46,10 +88,13 @@ export class ProductService {
   }
 
   async remove(id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return { Message: "Produc id Noto'g'ri" };
+    }
     let product = await this.ProductSchema.findById(id);
     if (!product) {
       return { Message: 'Not Fount Product id' };
     }
     return await this.ProductSchema.findByIdAndDelete(id);
   }
- }
+}
