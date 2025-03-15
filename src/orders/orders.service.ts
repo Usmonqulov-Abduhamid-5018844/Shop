@@ -3,12 +3,11 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Order } from './schema/order.schema';
 import { Model } from 'mongoose';
-import { User, UserSchema } from 'src/user/schema/user.schema';
 
 @Injectable()
 export class OrdersService {
   constructor(@InjectModel(Order.name) private OrderSchema: Model<Order>,
-               @InjectModel(User.name) private UserSchema: Model<User>
+
 ){}
 
   async create(Orders: CreateOrderDto, req: any) {
@@ -30,11 +29,11 @@ export class OrdersService {
     return data
   }
 
-  async update(id: string, req:any) {
-    let userId = req.user.Id;
-    let USER = this.UserSchema.findById(id)
-    console.log(USER);
+  // async update(id: string, req:any) {
+  //   let userId = req.user.Id;
+
+  //   console.log(USER);
     
-  }
+
 
 }

@@ -19,9 +19,9 @@ export class OrdersController {
   }
 
   
-  @Patch('/status/:id')
-  update(@Param('id') id: string, @Request() req: any) {
-    return this.ordersService.update(id, req);
-  }
+  // @Patch('/status/:id')
+  // update(@Param('id') id: string, @Request() req: any) {
+  //   return this.ordersService.update(id, req);
+  // }
 
 }
