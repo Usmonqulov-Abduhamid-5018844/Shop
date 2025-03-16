@@ -5385,7 +5385,7 @@ shebang-regex@^3.0.0:
     multer "^1.4.5-lts.1"
     reflect-metadata "^0.2.2"
     rxjs "^7.8.1"
-    shop "file:C:/Users/Asus/AppData/Local/Yarn/Cache/v6/npm-shop-0.0.1-af0b5823-0f9c-4300-bb35-eed833f22b2c-1742122250784/node_modules/shop"
+    shop "file:C:/Users/Asus/AppData/Local/Yarn/Cache/v6/npm-shop-0.0.1-ee5ad960-cc96-46e2-9ef9-01c9c3ad9910-1742127131444/node_modules/shop"
 
 side-channel-list@^1.0.0:
   version "1.0.0"
