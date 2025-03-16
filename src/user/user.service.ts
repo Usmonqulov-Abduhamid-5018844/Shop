@@ -49,13 +49,30 @@ export class UserService {
       return { Message: error };
     }
   }
-  async findAll() {
+  async findAll(query: Record<string, any>) {
     try {
-      let data = await this.UserSchema.find().populate('regionId');
-      if (!data.length) {
-        return { Message: 'Not Fount User' };
+      let sort: any = {};
+      let page = parseInt(query.page) || 1;
+      let limit = parseInt(query.limit) || 10;
+      let skip = (page - 1) * limit;
+
+      if (query.sortBy) {
+        sort[query.sortBy] = query.order === 'desc' ? -1 : 1;
+      } else {
+        sort.name = -1;
       }
-      return data;
+      let User = await this.UserSchema.find()
+        .populate('regionId')
+        .sort(sort)
+        .skip(skip)
+        .limit(limit);
+
+      return {
+        total: User.length,
+        page,
+        limit,
+        data: User,
+      };
     } catch (error) {
       return { Message: error };
     }

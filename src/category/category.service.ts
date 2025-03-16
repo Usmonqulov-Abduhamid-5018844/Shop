@@ -15,14 +15,34 @@ export class CategoryService {
     return await this.CategorySchema.create(data);
   }
 
-  async findAll() {
-    let data = await this.CategorySchema.find();
-    if (!data.length) {
-      return { Message: 'Not Found Category' };
-    }
-    return data;
-  }
+  async findAll(query: Record<string,any>) {
+    try{
+      let sort: any = {};
+      let page = parseInt(query.page) || 1;
+      let limit = parseInt(query.limit) || 10;
+      let skip = (page - 1) * limit;
 
+      if (query.sortBy) {
+        sort[query.sortBy] = query.order === 'desc' ? -1 : 1;
+      } else {
+        sort.name = -1;
+      }
+      let category = await this.CategorySchema.find()
+        .sort(sort)
+        .skip(skip)
+        .limit(limit);
+
+      return {
+        total: category.length,
+        page,
+        limit,
+        data: category,
+      };
+    }catch(error){
+      return {Message: error}
+    }
+  };
+  
   async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return { Message: "Category id Noto'g'ri" };

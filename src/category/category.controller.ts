@@ -1,8 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('category')
 export class CategoryController {
@@ -15,8 +26,13 @@ export class CategoryController {
   }
 
   @Get()
-  findAll() {
-    return this.categoryService.findAll();
+  @ApiQuery({ name: 'page', required: false, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, example: 10 })
+  @ApiQuery({ name: 'sortBy', required: true, example: 'name' })
+  @ApiQuery({ name: 'order', required: true, enum: ['asc', 'desc'] })
+  findAll(@Query() query: Record<string, any>) {
+    
+    return this.categoryService.findAll(query);
   }
 
   @Get(':id')
