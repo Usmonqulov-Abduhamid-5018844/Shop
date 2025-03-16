@@ -33,6 +33,7 @@ export class CommentsController {
     return this.commentsService.findOne(id);
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string, @Request() req: any) {
     return this.commentsService.remove(id, req);

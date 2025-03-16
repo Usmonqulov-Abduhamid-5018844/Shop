@@ -2,6 +2,7 @@ import {
   Controller,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -15,17 +16,16 @@ import {
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { existsSync, mkdirSync } from 'fs';
-
+import { AuthGuard } from 'src/auth/auth.guard';
 
 const uploadPath = path.join(__dirname, '..', '..', 'uploads');
-
 if (!existsSync(uploadPath)) {
   mkdirSync(uploadPath, { recursive: true });
 }
-
 @ApiTags('File Upload')
 @Controller('upload')
 export class UploadController {
+  @UseGuards(AuthGuard)
   @Post()
   @UseInterceptors(
     FileInterceptor('file', {

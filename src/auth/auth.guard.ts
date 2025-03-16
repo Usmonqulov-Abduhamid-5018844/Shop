@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('Token is missing');
     }
     try{
-      let Users = this.Jwt.verify(Token);
+      let Users = this.Jwt.verify(Token, {secret: "acsestoken"});
       request["user"] = Users;
       return true;
     }

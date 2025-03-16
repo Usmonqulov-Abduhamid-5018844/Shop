@@ -9,9 +9,9 @@ import { User, UserSchema } from './schema/user.schema';
   imports:[MongooseModule.forFeature([{name: User.name, schema: UserSchema}]),
     JwtModule.register({
     global: true,
-    secret: "Abduhamid",
     signOptions: { expiresIn: '1d' },
-  })],
+  }),
+],
   controllers: [UserController],
   providers: [UserService],
 })

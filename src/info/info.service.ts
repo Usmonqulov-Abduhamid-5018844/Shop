@@ -41,9 +41,12 @@ export class InfoService {
 
   async MY_data(req: any) {
     let userId = req.user.Id;
-    return await this.UserSchema.findById(userId).populate('regionId')
+    let data = await this.UserSchema.findById(userId).populate('regionId')
+    if(!data){
+      return {Message: "Malumotlaringi topilmadi"}
+    }
+    return data
   }
-
   async My_product(req: any) {
     let userId = req.user.Id;
     let user = await this.UserSchema.findById(userId);

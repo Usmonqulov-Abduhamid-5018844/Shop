@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -17,6 +27,8 @@ export class OrdersController {
   findAll() {
     return this.ordersService.findAll();
   }
-
-
+  @Patch(':id')
+  status(@Param('id') id: string, @Request() req: any) {
+    return this.ordersService.Update(id ,req);
+  }
 }

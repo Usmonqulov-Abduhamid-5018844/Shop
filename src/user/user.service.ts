@@ -21,9 +21,9 @@ export class UserService {
       if (user) {
         return { Message: "Ro'yhaddan o'tgansiz" };
       }
-      let UserPhonr = await this.UserSchema.findOne({phone});
-      if(UserPhonr){
-        return {Message: "Bunday telefon raqam Bazada mavjud."}
+      let UserPhonr = await this.UserSchema.findOne({ phone });
+      if (UserPhonr) {
+        return { Message: 'Bunday telefon raqam Bazada mavjud.' };
       }
 
       let hash = bcrypt.hashSync(password, 10);
@@ -43,7 +43,8 @@ export class UserService {
       if (!bcrypt.compareSync(password, user.password)) {
         return { Message: 'Password Xato kritildi' };
       }
-      return { Token: this.Jwt.sign({ Id: user._id }) };
+      let acsestoken = this.AcsessToken({ Id: user._id, role: user.role });
+      return { acsestoken };
     } catch (error) {
       return { Message: error };
     }
@@ -79,22 +80,26 @@ export class UserService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string, req: any) {
     try {
       if (!mongoose.Types.ObjectId.isValid(id)) {
         return { Message: "User id Noto'g'ri" };
       }
-      try {
-        let user = await this.UserSchema.findById(id);
-        if (!user) {
-          return { Message: 'Not Found user' };
-        }
-        return this.UserSchema.findByIdAndDelete(id);
-      } catch (e) {
-        return { Message: e.Message };
+      let user = await this.UserSchema.findById(id);
+      if (!user) {
+        return { Message: 'Not Found user' };
       }
+      
+      if(!(user._id == req.user.Id || req.user.role == "ADMIN")){
+        return {Message: "Sizda Administratsiya huquqi yo'q"}
+      }
+      return {Deleted: await this.UserSchema.findByIdAndDelete(id)}
     } catch (error) {
       return { Message: error };
     }
+  }
+
+  AcsessToken(pelod: { Id: any; role: string }) {
+    return this.Jwt.sign(pelod, { secret: 'acsestoken' });
   }
 }
