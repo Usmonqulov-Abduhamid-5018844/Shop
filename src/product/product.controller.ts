@@ -35,7 +35,7 @@ export class ProductController {
   @ApiQuery({ name: 'minprice', required: false, example: '24000' })
   @ApiQuery({ name: 'maxprice', required: false, example: '67000' })
   @ApiQuery({name: "categoryId",required: false, example: "categoryId"})
-  @ApiQuery({name: "name", required: false, example: "alex"})
+  @ApiQuery({name: "name", required: false, example: "product name"})
   @ApiQuery({name: "description", required: false, example: "Kurtga"})
   findAll(@Query() query: Record<string, any>) {
     return this.productService.findAll(query);
