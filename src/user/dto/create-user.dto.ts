@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsEnum, IsMongoId, IsNotEmpty, IsObject, IsOptional, IsString, Length, Matches } from "class-validator";
+import { IsEmail, IsEnum, IsMongoId, IsNotEmpty, IsOptional, IsString, Length } from "class-validator";
 
 export enum Role  {
     USER = "USER",

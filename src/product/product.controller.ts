@@ -13,7 +13,7 @@ import {
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('Product')
@@ -28,11 +28,15 @@ export class ProductController {
   }
 
   @Get()
-  @ApiQuery({ name: 'page', required: false, example: 1})
-  @ApiQuery({ name: 'limit', required: false, example: 10})
-  @ApiQuery({ name: 'sortBy', required: true, example: 'name'})
-  @ApiQuery({name: 'order', required: true,enum: ['asc', 'desc']})
-
+  @ApiQuery({ name: 'page', required: false, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, example: 10 })
+  @ApiQuery({ name: 'sortBy', required: true, example: 'name' })
+  @ApiQuery({ name: 'order', required: true, enum: ['asc', 'desc'] })
+  @ApiQuery({ name: 'minprice', required: false, example: '24000' })
+  @ApiQuery({ name: 'maxprice', required: false, example: '67000' })
+  @ApiQuery({name: "categoryId",required: false, example: "categoryId"})
+  @ApiQuery({name: "name", required: false, example: "alex"})
+  @ApiQuery({name: "description", required: false, example: "Kurtga"})
   findAll(@Query() query: Record<string, any>) {
     return this.productService.findAll(query);
   }

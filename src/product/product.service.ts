@@ -5,7 +5,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './schema/product.schema';
 import mongoose, { Model } from 'mongoose';
 import { User } from 'src/user/schema/user.schema';
-import { Comment } from 'src/comments/schema/comment.schema';
 
 @Injectable()
 export class ProductService {
@@ -31,25 +30,49 @@ export class ProductService {
   }
   async findAll(query: Record<string, any>) {
     try {
-      let sort: any = {};
-      let page = parseInt(query.page) || 1;
-      let limit = parseInt(query.limit) || 10;
-      let skip = (page - 1) * limit;
+      let { page, limit, sortBy, order, minprice, maxprice, name, description, categoryId } = query;
 
-      if (query.sortBy) {
-        sort[query.sortBy] = query.order === 'desc' ? -1 : 1;
+      page = parseInt(page) || 1;
+      limit = parseInt(limit) || 10;
+      let skip = (page - 1) * limit;
+      
+      let sort: any = {};
+      if (sortBy) {
+        sort[sortBy] = order === 'desc' ? -1 : 1;
       } else {
         sort.name = -1;
       }
-      let products = await this.ProductSchema.find()
+      
+      let filter: Record<string, any> = {};
+      if (name) {
+        filter.name = { $regex: name, $options: 'i' };
+      }
+      if (description) {
+        filter.description = { $regex: description, $options: 'i' };
+      }
+      if (categoryId) {
+        if(mongoose.Types.ObjectId.isValid(categoryId)){
+          filter.categoryId = categoryId;
+        }
+        else{
+          return {Message: "Categoryid Noto'g'ri firmadda"}
+        }
+      }
+      if (minprice || maxprice) {
+        filter.price = {};
+        if (minprice) filter.price.$gte = parseFloat(minprice);
+        if (maxprice) filter.price.$lte = parseFloat(maxprice);
+      }
+      
+      let products = await this.ProductSchema.find(filter)
         .populate('userId')
         .populate('categoryId')
         .sort(sort)
         .skip(skip)
         .limit(limit);
-
+      let total = await this.ProductSchema.countDocuments(filter);
       return {
-        total: products.length,
+        total,
         page,
         limit,
         data: products,
@@ -58,7 +81,8 @@ export class ProductService {
       return { Message: error.message || 'Xatolik yuz berdi' };
     }
   }
-
+  
+  
   async findOne(id: string) {
     try {
       if (!mongoose.Types.ObjectId.isValid(id)) {
